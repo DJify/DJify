@@ -33,7 +33,7 @@ const fakePlaylists = [
   },
 ];
 
-var spotifyApi = new SpotifyWebApi();
+var spotifyApi = new Spotify();
 
 class Room extends Component {
 
