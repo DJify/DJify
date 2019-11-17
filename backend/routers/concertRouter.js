@@ -12,6 +12,7 @@ let concertRouter = express.Router()
 const RoomSchema = mongoose.Schema({
   name: String,
   djUserId: String,
+  avatarId: Number,
   genre: String,
 })
 
@@ -25,6 +26,7 @@ concertRouter.get('/', (req, res) => {
         rooms: {
           $push: {
             name: '$name',
+            avatarId: '$avatarId',
             djUserId: '$djUserId',
           },
         },
@@ -34,10 +36,11 @@ concertRouter.get('/', (req, res) => {
 })
 
 concertRouter.post('/', (req, res) => {
-  const { djUserId, roomName, genre } = req.query
+  const { djUserId, avatarId, roomName, genre } = req.query
 
   const newRoom = new Room({
     djUserId,
+    avatarId,
     genre,
     name: roomName,
   })

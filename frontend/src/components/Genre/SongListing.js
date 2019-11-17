@@ -2,10 +2,21 @@ import React from 'react'
 import { IoIosArrowForward as ArrowIcon } from 'react-icons/io'
 import { Link } from 'react-router-dom'
 
-const SongListing = ({ name, djUserId, imgURL, listenerCount }) => (
-  <Link className="blank-link" to="/room">
+const images = [
+  require('../../resources/img/avatar/WhiteMale.png'),
+  require('../../resources/img/avatar/TanMale.png'),
+  require('../../resources/img/avatar/BrownMale.png'),
+  require('../../resources/img/avatar/BlackMale.png'),
+  require('../../resources/img/avatar/WhiteFemale.png'),
+  require('../../resources/img/avatar/TanFemale.png'),
+  require('../../resources/img/avatar/BrownFemale.png'),
+  require('../../resources/img/avatar/BlackFemale.png'),
+]
+
+const SongListing = ({ name, djUserId, avatarId, listenerCount }) => (
+  <Link className="blank-link" to={`/room/${avatarId || 0}`}>
     <section className="song">
-      <img src={imgURL} alt={name} />
+      <img src={images[avatarId || 0]} alt={name} />
       <div className="text">
         <h3>{name}</h3>
         <p>{`Feat. ${djUserId}`}</p>
