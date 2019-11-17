@@ -18,7 +18,7 @@ class Room extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isDj: true,
+      isDj: false,
       selected: 0,
       user: {
         username: "",
@@ -38,21 +38,23 @@ class Room extends Component {
     let that = this;
     if (this.context && this.context[0] && this.context[0].token && this.state.user.username === "") {
       await spotifyApi.setAccessToken(this.context[0].token);
-      spotifyApi.getUserPlaylists()
-        .then(function(data) {
-          that.setState({
-            items: data.items
+      if (this.state.isDj) {
+        spotifyApi.getUserPlaylists()
+          .then(function(data) {
+            that.setState({
+              items: data.items
+            });
+            console.log('User playlists', data);
+          }, function(err) {
+            console.error(err);
           });
-          console.log('User playlists', data);
-        }, function(err) {
-          console.error(err);
+        this.setState({
+          user: {
+            username: this.context[0].username,
+            avatar: this.context[0].chosenAvatarId,
+          }
         });
-      this.setState({
-        user: {
-          username: this.context[0].username,
-          avatar: this.context[0].chosenAvatarId,
-        }
-      });
+      }
     }
   }
 
@@ -60,21 +62,23 @@ class Room extends Component {
     let that = this;
     if (this.context && this.context[0] && this.context[0].token.length > 0) {
       await spotifyApi.setAccessToken(this.context[0].token);
-      spotifyApi.getUserPlaylists()
-        .then(function(data) {
-          that.setState({
-            items: data.items
+      if (this.state.isDj) {
+        spotifyApi.getUserPlaylists()
+          .then(function (data) {
+            that.setState({
+              items: data.items
+            });
+            console.log('User playlists', data);
+          }, function (err) {
+            console.error(err);
           });
-          console.log('User playlists', data);
-        }, function(err) {
-          console.error(err);
+        this.setState({
+          user: {
+            username: this.context[0].username,
+            avatar: this.context[0].chosenAvatarId,
+          }
         });
-      this.setState({
-        user: {
-          username: this.context[0].username,
-          avatar: this.context[0].chosenAvatarId,
-        }
-      });
+      }
       this.getCurrentPlaybackState();
       setInterval(() => this.getCurrentPlaybackState(), 5000);
     }
@@ -91,14 +95,15 @@ class Room extends Component {
   getCurrentPlaybackState() {
     const _this = this;
     spotifyApi.getMyCurrentPlaybackState().then(result => {
-      _this.setState({
-        curSong: {
-          album: result.item.album.name,
-          title: result.item.name,
-          artist: result.item.artists[0].name,
-          albumImg: result.item.album.images[0].url,
-        }
-      });
+      if (result && result.item)
+        _this.setState({
+          curSong: {
+            album: result.item.album.name,
+            title: result.item.name,
+            artist: result.item.artists[0].name,
+            albumImg: result.item.album.images[0].url,
+          }
+        });
     });
   }
 
