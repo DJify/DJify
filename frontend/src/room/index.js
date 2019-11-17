@@ -38,6 +38,11 @@ class Room extends Component {
     this.state = {
       isDj: true,
       selected: 0,
+      force: false,
+      user: {
+        username: "",
+        avatar: 0,
+      },
       //amountAhead: 2,
       items: [],
       changedValues: false,
@@ -48,11 +53,35 @@ class Room extends Component {
     //this.handleOutletOrder = this.handleOutletOrder.bind(this);
   }
 
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.context && this.context[0] && this.context[0].token && this.state.user.username === "") {
+      this.setState({
+        force: true
+      });
+      this.setState({
+        user: {
+          username: this.context[0].username,
+          avatar: this.context[0].chosenAvatarId,
+          force: false
+        }
+      });
+    }
+  }
+
   componentDidMount() {
-    if (this.context && this.context[0] && this.context[0].token.length > 0)
+    if (this.context && this.context[0] && this.context[0].token.length > 0) {
+      console.log(this.context);
       spotifyApi.setAccessToken(this.context[0].token);
+      this.setState({
+        user: {
+          username: this.context[0].username,
+          avatar: this.context[0].chosenAvatarId,
+        }
+      });
       this.getCurrentPlaybackState();
       setInterval(() => this.getCurrentPlaybackState(), 5000);
+    }
   }
 
   // handleOutletOrder = (items) => {
@@ -82,13 +111,12 @@ class Room extends Component {
 
     return(
       <div id="room">
-      <button
-    className="float-btn link-btn">
-      <Link to="/dashboard">
-      Back
-      </Link>
+      <button className="float-btn link-btn">
+        <Link to="/dashboard">
+        Back
+        </Link>
       </button>
-      <PartyAnimation user={fakeUser}/>
+      <PartyAnimation user={this.state.user}/>
     <div id="room-controls" className="center">
       {/*{*/}
     {/*  this.state.isDj ?*/}
@@ -115,7 +143,7 @@ class Room extends Component {
     {/*      :*/}
     {/*    null*/}
     {/*}*/}
-  {curSong && <SongDisplay
+  {! this.state.force && curSong && <SongDisplay
     song={curSong}
     isDj={this.state.isDj}/>}
     <br />
@@ -127,8 +155,8 @@ class Room extends Component {
         : "Select a playlist"
     }</small>
     {
-      this.state.isDj && this.state.items.length > 0 &&
-      this.state.items.map((item, index) =>
+      this.state.isDj && fakePlaylists.length > 0 &&
+      fakePlaylists.map((item, index) =>
           <div
         onClick={() => this._handleClick(index)}
       style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
