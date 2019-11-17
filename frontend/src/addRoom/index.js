@@ -59,7 +59,7 @@ const AddRoom = () => {
           id="concert_genre"
           name="concert_genre"
         >
-          <option>R&B</option>
+          <option>R{'&'}B</option>
           <option>Rock</option>
           <option>Pop</option>
           <option>Hip Hop</option>
