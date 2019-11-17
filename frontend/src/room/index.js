@@ -6,6 +6,8 @@ import QueueDisplay from "./QueueDisplay";
 import { Progress } from 'react-sweet-progress';
 import "react-sweet-progress/lib/style.css";
 import {Link} from "react-router-dom";
+import { StateContext } from "../UserStore";
+var Spotify = require('spotify-web-api-js');
 
 const fakeUser = {
   username: "Khalid",
@@ -31,7 +33,11 @@ const fakePlaylists = [
   },
 ];
 
+var spotifyApi = new SpotifyWebApi();
+
 class Room extends Component {
+
+  static contextType = StateContext;
 
   constructor(props) {
     super(props);
@@ -48,20 +54,8 @@ class Room extends Component {
   }
 
   async componentDidMount() {
-    console.log(this.context[0]);
-    // let url =  window.location.href.includes('localhost')
-    //   ? 'http://localhost:8888/user/playlists'
-    //   : 'https://djify-backend.herokuapp.com/user/playlists';
-    // let response = await fetch(url, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   params: JSON.stringify({
-    //     access_token: "BQAlAeU3-DPzxGlRTuGRReprKPNDSxnPPDpji1B1gY0nkfcxp1lu_TVzap_AjjuerZ3PfFy4btybz5EGdrghuYo_VeJp8YWqpF7Lud6ixbI_rR58moB2GpdhiEOmbPbgluYY8uEqgpv07sTx8xlrJ2eJN9OQmARfQr-nFHV5lJ_lnltjd1fkxS-8EbcwRCUsNCw"
-    //   })
-    // });
-    // let responseJson = await response.json();
+    if (this.context && this.context[0] && this.context[0].token.length > 0)
+      spotifyApi.setAccessToken(this.context[0].token);
   }
 
   // handleOutletOrder = (items) => {
