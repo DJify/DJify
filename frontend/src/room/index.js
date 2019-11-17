@@ -14,12 +14,6 @@ const fakeUser = {
   avatar: 3,
 };
 
-const fakeSong = {
-  album: "Starboy",
-  title: "The Weekend",
-  artist: "Starboy",
-  albumImg: "http://i.imgur.com/mjqJhdD.jpg"
-};
 
 const fakePlaylists = [
   {
@@ -47,15 +41,18 @@ class Room extends Component {
       //amountAhead: 2,
       items: [],
       changedValues: false,
+      curSong: null
       //percent: -23,
     };
     this._handleClick = this._handleClick.bind(this);
     //this.handleOutletOrder = this.handleOutletOrder.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     if (this.context && this.context[0] && this.context[0].token.length > 0)
       spotifyApi.setAccessToken(this.context[0].token);
+      this.getCurrentPlaybackState();
+      setInterval(() => this.getCurrentPlaybackState(), 5000);
   }
 
   // handleOutletOrder = (items) => {
@@ -66,7 +63,23 @@ class Room extends Component {
     this.setState({selected, changedValues: true});
   }
 
+  getCurrentPlaybackState() {
+    const _this = this
+    spotifyApi.getMyCurrentPlaybackState().then(result => {
+      _this.setState({
+        curSong: {
+          album: result.item.album.name,
+          title: result.item.name,
+          artist: result.item.artists[0].name,
+          albumImg: result.item.album.images[0].url,
+        }
+      });
+    });
+  }
+
   render() {
+    let {curSong} = this.state;
+
     return(
       <div id="room">
       <button
@@ -102,9 +115,9 @@ class Room extends Component {
     {/*      :*/}
     {/*    null*/}
     {/*}*/}
-  <SongDisplay
-    song={fakeSong}
-    isDj={this.state.isDj}/>
+  {curSong && <SongDisplay
+    song={curSong}
+    isDj={this.state.isDj}/>}
     <br />
     <small
     style={{ marginBottom: 12 }}
