@@ -170,17 +170,18 @@ class Room extends Component {
         "Your changes will happen after this song"
         : "Select a playlist"
     }</small>
-    {
-      this.state.isDj && this.state.items.length > 0 &&
-      this.state.items.map((item, index) =>
-          <div
-        onClick={() => this._handleClick(index)}
-      style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
-      className="search-result">
-        <b>{item.name}</b>
-        </div>
-    )
-    }
+    <div style={{ height: '40vh', overflowY:'scroll' }}>
+      { this.state.isDj && this.state.items.length > 0 &&
+        this.state.items.map((item, index) =>
+        <div
+          onClick={() => this._handleClick(index)}
+          style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
+          className="search-result">
+          <b>{item.name}</b>
+        </div>)
+      }
+    </div>
+
     {/*{*/}
     {/*  this.state.isDj ?*/}
     {/*    <QueueDisplay*/}
