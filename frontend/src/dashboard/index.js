@@ -21,6 +21,15 @@ const dummyData = [
 const Dashboard = ({ onShowMoreListings }) => {
   const [filteredData, setFilteredData] = React.useState(dummyData);
 
+  React.useEffect(() => {
+    fetch('/concert')
+      .then(res => res.json())
+      .then(data => {
+        console.log(data.roomsByGenre)
+        setFilteredData(data.roomsByGenre)
+      })
+  }, [])
+
   const onSearch = searchBy => {
     const filtered = dummyData.filter(item =>
       item.genre.toLowerCase().includes(searchBy.toLowerCase())
@@ -31,11 +40,11 @@ const Dashboard = ({ onShowMoreListings }) => {
   return (
     <section className="dashboard-page">
       <Nav onSearch={onSearch} />
-      {filteredData.map(({ genre, backingImgURL, rooms }) => (
+      {filteredData.map(({ _id, rooms }) => (
         <GenreCard
-          key={genre}
-          genre={genre}
-          backingImgURL={backingImgURL}
+          key={_id}
+          genre={_id}
+          backingImgURL="/example-media/concert-strobe.gif"
           rooms={rooms}
           onShowMoreListings={onShowMoreListings}
         />

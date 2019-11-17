@@ -22,22 +22,16 @@ const AddRoom = () => {
     e.preventDefault()
     const formData = new FormData(e.target)
     const { id, token } = user
-    const apiData = {
-      name: formData.get('concert_name'),
-      category: formData.get('concert_genre'),
-      spotifyUserId: id,
-    }
+    const name = formData.get('concert_name')
+    const genre = formData.get('concert_genre')
+
     const options = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      params: {
-        access_token: token,
-      },
-      body: JSON.stringify(apiData),
     }
-    fetch('/concert', options).then(response => console.log('ooof', response))
+    fetch(
+      `/concert?djUserId=${id}&roomName=${name}&genre=${genre}`,
+      options
+    ).then(response => console.log('ooof', response))
   }
 
   const collapse = () => {

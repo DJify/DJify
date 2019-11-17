@@ -18,8 +18,8 @@ class Room extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isDj: false,
-      selected: 0,
+      isDj: true,
+      selected: -1,
       user: {
         username: "",
         avatar: 0,
@@ -27,7 +27,8 @@ class Room extends Component {
       //amountAhead: 2,
       items: [],
       changedValues: false,
-      curSong: null
+      curSong: null,
+      volume: 100,
       //percent: -23,
     };
     this._handleClick = this._handleClick.bind(this);
@@ -40,12 +41,12 @@ class Room extends Component {
       await spotifyApi.setAccessToken(this.context[0].token);
       if (this.state.isDj) {
         spotifyApi.getUserPlaylists()
-          .then(function(data) {
+          .then(function (data) {
             that.setState({
               items: data.items
             });
             console.log('User playlists', data);
-          }, function(err) {
+          }, function (err) {
             console.error(err);
           });
         this.setState({
@@ -54,6 +55,14 @@ class Room extends Component {
             avatar: this.context[0].chosenAvatarId,
           }
         });
+        this.setState({
+          user: {
+            username: this.context[0].username,
+            avatar: this.context[0].chosenAvatarId,
+          }
+        });
+        this.getCurrentPlaybackState();
+        setInterval(() => this.getCurrentPlaybackState(), 5000);
       }
     }
   }
@@ -89,13 +98,18 @@ class Room extends Component {
   // };
 
   _handleClick(selected) {
-    this.setState({selected, changedValues: true});
+    if (this.state.selected === -1) {
+      this.setState({selected, changedValues: true})
+
+      const selectedPlaylistUri = this.state.items[selected].uri
+      spotifyApi.play({context_uri: selectedPlaylistUri})
+    }
   }
 
   getCurrentPlaybackState() {
     const _this = this;
     spotifyApi.getMyCurrentPlaybackState().then(result => {
-      if (result && result.item)
+      if (result) {
         _this.setState({
           curSong: {
             album: result.item.album.name,
@@ -104,11 +118,32 @@ class Room extends Component {
             albumImg: result.item.album.images[0].url,
           }
         });
+      }
     });
   }
 
+  setVolume = () => {
+    const {volume} = this.state;
+    let volumeUpdated = volume;
+
+    if (volume == 0) {
+      this.setState({
+        volume: 100
+      });
+      volumeUpdated = 100;
+    } else {
+      this.setState({
+        volume: 0
+      });
+      volumeUpdated = 0;
+    }
+
+    spotifyApi.setVolume(volumeUpdated).then(() => {});
+
+  }
+
   render() {
-    let {curSong} = this.state;
+    let {curSong, volume} = this.state;
 
     return(
       <div id="room">
@@ -144,28 +179,31 @@ class Room extends Component {
     {/*      :*/}
     {/*    null*/}
     {/*}*/}
-  {! this.state.force && curSong && <SongDisplay
+  {!this.state.force && curSong && <SongDisplay
     song={curSong}
+    volume={volume}
+    muteButton={this.setVolume}
     isDj={this.state.isDj}/>}
     <br />
-    <small
-    style={{ marginBottom: 12 }}
+    <p
+    style={{ marginTop: '20px', marginBottom: '20px' }}
     className="color-neutral">{
       this.state.changedValues ?
         "Your changes will happen after this song"
         : "Select a playlist"
-    }</small>
-    {
-      this.state.isDj && this.state.items.length > 0 &&
-      this.state.items.map((item, index) =>
-          <div
-        onClick={() => this._handleClick(index)}
-      style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
-      className="search-result">
-        <b>{item.name}</b>
-        </div>
-    )
-    }
+    }</p>
+    <div style={{ height: '40vh', overflowY:'scroll' }}>
+      { this.state.isDj && this.state.items.length > 0 &&
+        this.state.items.map((item, index) =>
+        <div
+          onClick={() => this._handleClick(index)}
+          style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
+          className="search-result">
+          <b>{item.name}</b>
+        </div>)
+      }
+    </div>
+
     {/*{*/}
     {/*  this.state.isDj ?*/}
     {/*    <QueueDisplay*/}

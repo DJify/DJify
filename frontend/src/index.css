@@ -135,7 +135,7 @@ hr {
   color: white;
   font-size: 20px;
   font-weight: 600;
-  margin-left: -42px;
+  margin-left: -32px;
   padding: 6px;
   background-color: rgba(0, 0, 0, 0.5); }
 
@@ -254,6 +254,7 @@ hr {
     background-color: #e5e5e5; }
 
 .color-neutral {
+  font-size: 22px;
   color: #cecece; }
 
 .color-neutral-light {
