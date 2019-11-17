@@ -14,7 +14,6 @@ const animations = [
 
 const PartyAnimation = props => {
   const params = useParams()
-  console.log(params)
 
   return (
     <div id="party">

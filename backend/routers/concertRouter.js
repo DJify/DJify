@@ -50,6 +50,16 @@ concertRouter.post('/', (req, res) => {
     .catch(err => res.sendStatus(400))
 })
 
+concertRouter.post('/choosePlaylist', (req, res) => {
+  const { currentSongId, roomGenre, roomName, djUserId } = req.query
+  Room.findOneAndUpdate(
+    { genre: roomGenre, name: roomName, djUserId: djUserId },
+    {
+      $set: { currentSongId },
+    }
+  )
+})
+
 concertRouter.route('/join').post((req, res) => {
   const { userId, concertId, songId } = req.body
   const curUser = User.findById(userId)
