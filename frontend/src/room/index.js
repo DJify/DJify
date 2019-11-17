@@ -39,7 +39,7 @@ class Room extends Component {
     let that = this;
     if (this.context && this.context[0] && this.context[0].token && this.state.user.username === "") {
       await spotifyApi.setAccessToken(this.context[0].token);
-      spotifyApi.getUserPlaylists()
+      spotifyApi.getUserPlaylists({limit: 50})
         .then(function(data) {
           that.setState({
             items: data.items
