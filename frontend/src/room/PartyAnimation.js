@@ -2,13 +2,13 @@ import React from 'react';
 
 const animations = [
   require('../resources/img/dj-animations/DJ White Male.gif'),
-  require('../resources/img/dj-animations/DJ White Female.gif'),
-  require('../resources/img/dj-animations/DJ Black Male.gif'),
-  require('../resources/img/dj-animations/DJ Black Female.gif'),
-  require('../resources/img/dj-animations/DJ Brown Male.gif'),
-  require('../resources/img/dj-animations/DJ Brown Female.gif'),
   require('../resources/img/dj-animations/DJ Tan Male.gif'),
+  require('../resources/img/dj-animations/DJ Brown Male.gif'),
+  require('../resources/img/dj-animations/DJ Black Male.gif'),
+  require('../resources/img/dj-animations/DJ White Female.gif'),
   require('../resources/img/dj-animations/DJ Tan Female.gif'),
+  require('../resources/img/dj-animations/DJ Brown Female.gif'),
+  require('../resources/img/dj-animations/DJ Black Female.gif'),
 ];
 
 const PartyAnimation = (props) => <div id="party">
