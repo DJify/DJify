@@ -12,111 +12,21 @@ const dummyData = [
         imgURL: '/example-media/album-cover.jpg',
         name: 'Party Room',
         djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-    ],
-  },
-  {
-    genre: 'Lofi',
-    backingImgURL: '/example-media/concert-strobe.gif',
-    rooms: [
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
-      },
-      {
-        imgURL: '/example-media/album-cover.jpg',
-        name: 'Party Room',
-        djList: ['DJ Howey'],
-        listenerCount: 21,
+        listenerCount: 0,
       },
     ],
   },
 ]
 
 const Dashboard = ({ onShowMoreListings }) => {
-  const [filteredData, setFilteredData] = React.useState(dummyData)
+  const [filteredData, setFilteredData] = React.useState(dummyData);
 
   const onSearch = searchBy => {
     const filtered = dummyData.filter(item =>
       item.genre.toLowerCase().includes(searchBy.toLowerCase())
-    )
+    );
     setFilteredData(filtered)
-  }
+  };
 
   return (
     <section className="dashboard-page">

@@ -268,4 +268,11 @@ hr {
   display: block;
   width: 100%; }
 
+.blank-link {
+  background-color: transparent;
+  padding: 0;
+  color: black;
+  text-transform: none;
+  margin: 0; }
+
 /*# sourceMappingURL=index.css.map */

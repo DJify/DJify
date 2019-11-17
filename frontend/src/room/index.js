@@ -49,19 +49,19 @@ class Room extends Component {
 
   async componentDidMount() {
     console.log(this.context[0]);
-    let url =  window.location.href.includes('localhost')
-      ? 'http://localhost:8888/user/playlists'
-      : 'https://djify-backend.herokuapp.com/user/playlists';
-    let response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      params: JSON.stringify({
-        access_token: "BQAlAeU3-DPzxGlRTuGRReprKPNDSxnPPDpji1B1gY0nkfcxp1lu_TVzap_AjjuerZ3PfFy4btybz5EGdrghuYo_VeJp8YWqpF7Lud6ixbI_rR58moB2GpdhiEOmbPbgluYY8uEqgpv07sTx8xlrJ2eJN9OQmARfQr-nFHV5lJ_lnltjd1fkxS-8EbcwRCUsNCw"
-      })
-    });
-    let responseJson = await response.json();
+    // let url =  window.location.href.includes('localhost')
+    //   ? 'http://localhost:8888/user/playlists'
+    //   : 'https://djify-backend.herokuapp.com/user/playlists';
+    // let response = await fetch(url, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   params: JSON.stringify({
+    //     access_token: "BQAlAeU3-DPzxGlRTuGRReprKPNDSxnPPDpji1B1gY0nkfcxp1lu_TVzap_AjjuerZ3PfFy4btybz5EGdrghuYo_VeJp8YWqpF7Lud6ixbI_rR58moB2GpdhiEOmbPbgluYY8uEqgpv07sTx8xlrJ2eJN9OQmARfQr-nFHV5lJ_lnltjd1fkxS-8EbcwRCUsNCw"
+    //   })
+    // });
+    // let responseJson = await response.json();
   }
 
   // handleOutletOrder = (items) => {

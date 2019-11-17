@@ -3,6 +3,7 @@ import TextInput from '../components/TextInput'
 import './styles.scss'
 import { useHistory } from 'react-router-dom'
 import { useUserState } from '../UserStore'
+import { Link } from "react-router-dom";
 
 const AddRoom = () => {
   const history = useHistory()
@@ -49,7 +50,7 @@ const AddRoom = () => {
   return (
     <section className={`add-room-page ${open ? 'opening' : 'closing'}`}>
       <div className="background" onClick={collapse}></div>
-      <form className="card" onSubmit={createRoom}>
+      <form className="card">
         <TextInput
           className="form-input"
           id="concert_name"
@@ -67,7 +68,11 @@ const AddRoom = () => {
           <option>Rock</option>
           <option>Pop</option>
         </select>
-        <button type="submit">Create concert</button>
+        <button className="link-btn">
+          <Link to="/room">
+            Create concert
+          </Link>
+        </button>
       </form>
     </section>
   )

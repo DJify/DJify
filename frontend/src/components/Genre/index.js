@@ -20,14 +20,14 @@ const GenreCard = ({
     {(showAll ? rooms : rooms.slice(0, 2)).map(roomInfo => (
       <SongListing {...roomInfo} />
     ))}
-    {!showAll && (
-      <Link
-        to={`/dashboard/${genre}`}
-        onClick={() => onShowMoreListings({ genre, backingImgURL, rooms })}
-      >
-        Show more
-      </Link>
-    )}
+    {/*{!showAll && (*/}
+    {/*  <Link*/}
+    {/*    to={`/dashboard/${genre}`}*/}
+    {/*    onClick={() => onShowMoreListings({ genre, backingImgURL, rooms })}*/}
+    {/*  >*/}
+    {/*    Show more*/}
+    {/*  </Link>*/}
+    {/*)}*/}
   </section>
 )
 
