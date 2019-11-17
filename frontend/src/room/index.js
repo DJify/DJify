@@ -9,25 +9,6 @@ import {Link} from "react-router-dom";
 import { StateContext } from "../UserStore";
 var Spotify = require('spotify-web-api-js');
 
-const fakeSong = {
-  album: "Starboy",
-  title: "The Weekend",
-  artist: "Starboy",
-  albumImg: "http://i.imgur.com/mjqJhdD.jpg"
-};
-
-const fakePlaylists = [
-  {
-    name: "Barboy",
-  },
-  {
-    name: "Carboy",
-  },
-  {
-    name: "Scarboy",
-  },
-];
-
 var spotifyApi = new Spotify();
 
 class Room extends Component {
@@ -46,6 +27,7 @@ class Room extends Component {
       //amountAhead: 2,
       items: [],
       changedValues: false,
+      curSong: null
       //percent: -23,
     };
     this._handleClick = this._handleClick.bind(this);
@@ -93,6 +75,8 @@ class Room extends Component {
           avatar: this.context[0].chosenAvatarId,
         }
       });
+      this.getCurrentPlaybackState();
+      setInterval(() => this.getCurrentPlaybackState(), 5000);
     }
   }
 
@@ -104,7 +88,23 @@ class Room extends Component {
     this.setState({selected, changedValues: true});
   }
 
+  getCurrentPlaybackState() {
+    const _this = this;
+    spotifyApi.getMyCurrentPlaybackState().then(result => {
+      _this.setState({
+        curSong: {
+          album: result.item.album.name,
+          title: result.item.name,
+          artist: result.item.artists[0].name,
+          albumImg: result.item.album.images[0].url,
+        }
+      });
+    });
+  }
+
   render() {
+    let {curSong} = this.state;
+
     return(
       <div id="room">
       <button className="float-btn link-btn">
@@ -139,9 +139,9 @@ class Room extends Component {
     {/*      :*/}
     {/*    null*/}
     {/*}*/}
-    <SongDisplay
-        song={fakeSong}
-        isDj={this.state.isDj}/>
+  {! this.state.force && curSong && <SongDisplay
+    song={curSong}
+    isDj={this.state.isDj}/>}
     <br />
     <small
     style={{ marginBottom: 12 }}

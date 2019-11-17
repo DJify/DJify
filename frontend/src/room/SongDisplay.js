@@ -1,7 +1,8 @@
 import React from 'react';
 import { IoMdHeart, IoMdVolumeMute } from 'react-icons/io';
 
-const SongDisplay = (props) => <div className="song">
+const SongDisplay = (props) =>
+<div className="song">
   <img
     className="song-album-cover"
     src={props.song.albumImg}
