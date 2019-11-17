@@ -41,16 +41,16 @@ const AddRoom = () => {
   }
 
   const collapse = () => {
-    setOpen(false)
+    setOpen(false);
     setTimeout(() => {
       history.push('/dashboard')
     }, 300)
-  }
+  };
 
   return (
     <section className={`add-room-page ${open ? 'opening' : 'closing'}`}>
       <div className="background" onClick={collapse}></div>
-      <form className="card">
+      <form className="card" onSubmit={createRoom}>
         <TextInput
           className="form-input"
           id="concert_name"
@@ -68,10 +68,8 @@ const AddRoom = () => {
           <option>Rock</option>
           <option>Pop</option>
         </select>
-        <button className="link-btn">
-          <Link to="/room">
-            Create concert
-          </Link>
+        <button type="submit">
+          Create concert
         </button>
       </form>
     </section>

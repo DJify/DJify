@@ -9,24 +9,6 @@ import {Link} from "react-router-dom";
 import { StateContext } from "../UserStore";
 var Spotify = require('spotify-web-api-js');
 
-const fakeUser = {
-  username: "Khalid",
-  avatar: 3,
-};
-
-
-const fakePlaylists = [
-  {
-    name: "Barboy",
-  },
-  {
-    name: "Carboy",
-  },
-  {
-    name: "Scarboy",
-  },
-];
-
 var spotifyApi = new Spotify();
 
 class Room extends Component {
@@ -38,7 +20,6 @@ class Room extends Component {
     this.state = {
       isDj: true,
       selected: 0,
-      force: false,
       user: {
         username: "",
         avatar: 0,
@@ -54,26 +35,41 @@ class Room extends Component {
     //this.handleOutletOrder = this.handleOutletOrder.bind(this);
   }
 
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  async componentDidUpdate(prevProps, prevState, snapshot) {
+    let that = this;
     if (this.context && this.context[0] && this.context[0].token && this.state.user.username === "") {
-      this.setState({
-        force: true
-      });
+      await spotifyApi.setAccessToken(this.context[0].token);
+      spotifyApi.getUserPlaylists()
+        .then(function(data) {
+          that.setState({
+            items: data.items
+          });
+          console.log('User playlists', data);
+        }, function(err) {
+          console.error(err);
+        });
       this.setState({
         user: {
           username: this.context[0].username,
           avatar: this.context[0].chosenAvatarId,
-          force: false
         }
       });
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    let that = this;
     if (this.context && this.context[0] && this.context[0].token.length > 0) {
-      console.log(this.context);
-      spotifyApi.setAccessToken(this.context[0].token);
+      await spotifyApi.setAccessToken(this.context[0].token);
+      spotifyApi.getUserPlaylists()
+        .then(function(data) {
+          that.setState({
+            items: data.items
+          });
+          console.log('User playlists', data);
+        }, function(err) {
+          console.error(err);
+        });
       this.setState({
         user: {
           username: this.context[0].username,
@@ -94,7 +90,7 @@ class Room extends Component {
   }
 
   getCurrentPlaybackState() {
-    const _this = this
+    const _this = this;
     spotifyApi.getMyCurrentPlaybackState().then(result => {
       _this.setState({
         curSong: {
@@ -175,8 +171,8 @@ class Room extends Component {
         : "Select a playlist"
     }</small>
     {
-      this.state.isDj && fakePlaylists.length > 0 &&
-      fakePlaylists.map((item, index) =>
+      this.state.isDj && this.state.items.length > 0 &&
+      this.state.items.map((item, index) =>
           <div
         onClick={() => this._handleClick(index)}
       style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
