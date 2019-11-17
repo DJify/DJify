@@ -39,7 +39,7 @@ class Room extends Component {
       isDj: true,
       selected: 0,
       //amountAhead: 2,
-      items: fakePlaylists,
+      items: [],
       changedValues: false,
       //percent: -23,
     };
@@ -56,10 +56,9 @@ class Room extends Component {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
       },
       params: JSON.stringify({
-        access_token: "BQBIioVKi2tbwFcqh0PkUL8k60CDP1eacC0IwQ4zBHWU562h6ngvHumQLcsMlJFB4H5oZXRcz-xLzR6d9kMvfgjdV6nn8m3TS8UOUVwCH-pRG5LZTF-2kNcp0t1VTvToSQI00sM2sGj-AP2FWojYLFqe4G9l3PRdJdqajWc_fUKNAsLDZEHzIdNqZ0H5yUVWmOlJowkgkVf9PPVKhuTS&spotify_user_id=7229nfdot10lcxq028prmid1j"
+        access_token: "BQAlAeU3-DPzxGlRTuGRReprKPNDSxnPPDpji1B1gY0nkfcxp1lu_TVzap_AjjuerZ3PfFy4btybz5EGdrghuYo_VeJp8YWqpF7Lud6ixbI_rR58moB2GpdhiEOmbPbgluYY8uEqgpv07sTx8xlrJ2eJN9OQmARfQr-nFHV5lJ_lnltjd1fkxS-8EbcwRCUsNCw"
       })
     });
     let responseJson = await response.json();
