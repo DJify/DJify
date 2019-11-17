@@ -24,8 +24,8 @@ const SongDisplay = (props) =>
       </button>
     }
     <button onClick={props.muteButton}>
-      {props.volume != 0 && <IoMdVolumeMute size={40}/>}
-      {props.volume == 0 && <IoMdVolumeHigh size={40}/>}
+      {props.volume == 0 && <IoMdVolumeMute size={40}/>}
+      {props.volume != 0 && <IoMdVolumeHigh size={40}/>}
     </button>
   </div>
 </div>;

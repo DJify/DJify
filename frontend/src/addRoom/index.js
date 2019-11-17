@@ -59,8 +59,12 @@ const AddRoom = () => {
           id="concert_genre"
           name="concert_genre"
         >
+          <option>R&B</option>
           <option>Rock</option>
           <option>Pop</option>
+          <option>Hip Hop</option>
+          <option>Jazz</option>
+          <option>Country</option>
         </select>
         <button type="submit">Create concert</button>
       </form>

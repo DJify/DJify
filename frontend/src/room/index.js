@@ -19,7 +19,7 @@ class Room extends Component {
     super(props);
     this.state = {
       isDj: true,
-      selected: 0,
+      selected: -1,
       user: {
         username: "",
         avatar: 0,
@@ -39,7 +39,7 @@ class Room extends Component {
     let that = this;
     if (this.context && this.context[0] && this.context[0].token && this.state.user.username === "") {
       await spotifyApi.setAccessToken(this.context[0].token);
-      spotifyApi.getUserPlaylists()
+      spotifyApi.getUserPlaylists({limit: 50})
         .then(function(data) {
           that.setState({
             items: data.items
@@ -54,6 +54,8 @@ class Room extends Component {
           avatar: this.context[0].chosenAvatarId,
         }
       });
+      this.getCurrentPlaybackState();
+      setInterval(() => this.getCurrentPlaybackState(), 5000);
     }
   }
 
@@ -86,13 +88,12 @@ class Room extends Component {
   // };
 
   _handleClick(selected) {
-    this.setState({selected, changedValues: true})
-    console.log(selected);
+    if (this.state.selected === -1) {
+      this.setState({selected, changedValues: true})
 
-    const selectedPlaylistUri = this.state.items[selected].uri
-    console.log(selectedPlaylistUri)
-    spotifyApi.play({context_uri: selectedPlaylistUri})
-    // this.setState({curSong: })
+      const selectedPlaylistUri = this.state.items[selected].uri
+      spotifyApi.play({context_uri: selectedPlaylistUri})
+    }
   }
 
   getCurrentPlaybackState() {
@@ -112,19 +113,22 @@ class Room extends Component {
   }
 
   setVolume = () => {
-    const {volume} = this.state
+    const {volume} = this.state;
+    let volumeUpdated = volume;
 
     if (volume == 0) {
       this.setState({
         volume: 100
       });
+      volumeUpdated = 100;
     } else {
       this.setState({
         volume: 0
       });
+      volumeUpdated = 0;
     }
 
-    spotifyApi.setVolume(volume).then(() => {});
+    spotifyApi.setVolume(volumeUpdated).then(() => {});
 
   }
 
