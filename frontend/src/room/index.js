@@ -27,7 +27,8 @@ class Room extends Component {
       //amountAhead: 2,
       items: [],
       changedValues: false,
-      curSong: null
+      curSong: null,
+      volume: 100,
       //percent: -23,
     };
     this._handleClick = this._handleClick.bind(this);
@@ -110,8 +111,25 @@ class Room extends Component {
     });
   }
 
+  setVolume = () => {
+    const {volume} = this.state
+
+    if (volume == 0) {
+      this.setState({
+        volume: 100
+      });
+    } else {
+      this.setState({
+        volume: 0
+      });
+    }
+
+    spotifyApi.setVolume(volume).then(() => {});
+
+  }
+
   render() {
-    let {curSong} = this.state;
+    let {curSong, volume} = this.state;
 
     return(
       <div id="room">
@@ -147,28 +165,31 @@ class Room extends Component {
     {/*      :*/}
     {/*    null*/}
     {/*}*/}
-  {! this.state.force && curSong && <SongDisplay
+  {!this.state.force && curSong && <SongDisplay
     song={curSong}
+    volume={volume}
+    muteButton={this.setVolume}
     isDj={this.state.isDj}/>}
     <br />
-    <small
-    style={{ marginBottom: 12 }}
+    <p
+    style={{ marginTop: '20px', marginBottom: '20px' }}
     className="color-neutral">{
       this.state.changedValues ?
         "Your changes will happen after this song"
         : "Select a playlist"
-    }</small>
-    {
-      this.state.isDj && this.state.items.length > 0 &&
-      this.state.items.map((item, index) =>
-          <div
-        onClick={() => this._handleClick(index)}
-      style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
-      className="search-result">
-        <b>{item.name}</b>
-        </div>
-    )
-    }
+    }</p>
+    <div style={{ height: '40vh', overflowY:'scroll' }}>
+      { this.state.isDj && this.state.items.length > 0 &&
+        this.state.items.map((item, index) =>
+        <div
+          onClick={() => this._handleClick(index)}
+          style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
+          className="search-result">
+          <b>{item.name}</b>
+        </div>)
+      }
+    </div>
+
     {/*{*/}
     {/*  this.state.isDj ?*/}
     {/*    <QueueDisplay*/}
