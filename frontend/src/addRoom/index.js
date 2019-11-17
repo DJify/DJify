@@ -3,7 +3,7 @@ import TextInput from '../components/TextInput'
 import './styles.scss'
 import { useHistory } from 'react-router-dom'
 import { useUserState } from '../UserStore'
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
 const AddRoom = () => {
   const history = useHistory()
@@ -21,7 +21,7 @@ const AddRoom = () => {
   const createRoom = e => {
     e.preventDefault()
     const formData = new FormData(e.target)
-    const { id, token } = user
+    const { id, token, chosenAvatarId } = user
     const name = formData.get('concert_name')
     const genre = formData.get('concert_genre')
 
@@ -29,17 +29,17 @@ const AddRoom = () => {
       method: 'POST',
     }
     fetch(
-      `/concert?djUserId=${id}&roomName=${name}&genre=${genre}`,
+      `/concert?djUserId=${id}&roomName=${name}&genre=${genre}&avatarId=${chosenAvatarId}`,
       options
     ).then(response => console.log('ooof', response))
   }
 
   const collapse = () => {
-    setOpen(false);
+    setOpen(false)
     setTimeout(() => {
       history.push('/dashboard')
     }, 300)
-  };
+  }
 
   return (
     <section className={`add-room-page ${open ? 'opening' : 'closing'}`}>
@@ -66,9 +66,7 @@ const AddRoom = () => {
           <option>Jazz</option>
           <option>Country</option>
         </select>
-        <button type="submit">
-          Create concert
-        </button>
+        <button type="submit">Create concert</button>
       </form>
     </section>
   )
