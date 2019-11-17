@@ -9,11 +9,6 @@ import {Link} from "react-router-dom";
 import { StateContext } from "../UserStore";
 var Spotify = require('spotify-web-api-js');
 
-const fakeUser = {
-  username: "Khalid",
-  avatar: 3,
-};
-
 const fakeSong = {
   album: "Starboy",
   title: "The Weekend",
@@ -44,6 +39,11 @@ class Room extends Component {
     this.state = {
       isDj: true,
       selected: 0,
+      force: false,
+      user: {
+        username: "",
+        avatar: 0,
+      },
       //amountAhead: 2,
       items: [],
       changedValues: false,
@@ -53,9 +53,32 @@ class Room extends Component {
     //this.handleOutletOrder = this.handleOutletOrder.bind(this);
   }
 
-  async componentDidMount() {
-    if (this.context && this.context[0] && this.context[0].token.length > 0)
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.context && this.context[0] && this.context[0].token && this.state.user.username === "") {
+      this.setState({
+        force: true
+      });
+      this.setState({
+        user: {
+          username: this.context[0].username,
+          avatar: this.context[0].chosenAvatarId,
+          force: false
+        }
+      });
+    }
+  }
+
+  componentDidMount() {
+    if (this.context && this.context[0] && this.context[0].token.length > 0) {
+      console.log(this.context);
       spotifyApi.setAccessToken(this.context[0].token);
+      this.setState({
+        user: {
+          username: this.context[0].username,
+          avatar: this.context[0].chosenAvatarId,
+        }
+      });
+    }
   }
 
   // handleOutletOrder = (items) => {
@@ -69,13 +92,12 @@ class Room extends Component {
   render() {
     return(
       <div id="room">
-      <button
-    className="float-btn link-btn">
-      <Link to="/dashboard">
-      Back
-      </Link>
+      <button className="float-btn link-btn">
+        <Link to="/dashboard">
+        Back
+        </Link>
       </button>
-      <PartyAnimation user={fakeUser}/>
+      <PartyAnimation user={this.state.user}/>
     <div id="room-controls" className="center">
       {/*{*/}
     {/*  this.state.isDj ?*/}
@@ -102,9 +124,12 @@ class Room extends Component {
     {/*      :*/}
     {/*    null*/}
     {/*}*/}
-  <SongDisplay
-    song={fakeSong}
-    isDj={this.state.isDj}/>
+      {
+        !this.state.force &&
+        <SongDisplay
+          song={fakeSong}
+          isDj={this.state.isDj}/>
+      }
     <br />
     <small
     style={{ marginBottom: 12 }}
@@ -114,8 +139,8 @@ class Room extends Component {
         : "Select a playlist"
     }</small>
     {
-      this.state.isDj && this.state.items.length > 0 &&
-      this.state.items.map((item, index) =>
+      this.state.isDj && fakePlaylists.length > 0 &&
+      fakePlaylists.map((item, index) =>
           <div
         onClick={() => this._handleClick(index)}
       style={{ color: this.state.selected === index ? '#7c89ff' : '#000000' }}
