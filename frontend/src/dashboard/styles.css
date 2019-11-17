@@ -1,0 +1,26 @@
+.dashboard-page {
+  padding: 0 15px; }
+  .dashboard-page nav {
+    margin: 30px auto;
+    max-width: 800px;
+    display: flex;
+    align-items: center; }
+    .dashboard-page nav a,
+    .dashboard-page nav button {
+      padding: 0;
+      background: none;
+      color: white; }
+    .dashboard-page nav .genre-search-container {
+      padding: 0 15px;
+      padding-bottom: 15px;
+      flex: 1; }
+      .dashboard-page nav .genre-search-container input {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 36px;
+        width: 100%; }
+      .dashboard-page nav .genre-search-container label {
+        font-weight: bold; }
+
+/*# sourceMappingURL=styles.css.map */

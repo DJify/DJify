@@ -1,0 +1,35 @@
+.dashboard-page {
+  padding: 0 15px;
+
+  nav {
+    margin: 30px auto;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+
+    a,
+    button {
+      padding: 0;
+      background: none;
+      color: white;
+    }
+
+    .genre-search-container {
+      padding: 0 15px;
+      padding-bottom: 15px;
+      flex: 1;
+
+      input {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 36px;
+        width: 100%;
+      }
+
+      label {
+        font-weight: bold;
+      }
+    }
+  }
+}

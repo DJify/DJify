@@ -1,0 +1,28 @@
+.genre-page {
+  padding: 10px;
+  padding-top: 100px;
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 75px;
+    z-index: 1;
+
+    div {
+      background: linear-gradient(#000, rgba(0, 0, 0, 0));
+      height: 100%;
+      margin: auto;
+      max-width: 750px;
+      padding-top: 30px;
+    }
+
+    .back-button {
+      display: inline-block;
+      background: none;
+      padding: 5px;
+      border-radius: 100%;
+    }
+  }
+}
