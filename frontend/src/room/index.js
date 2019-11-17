@@ -85,20 +85,28 @@ class Room extends Component {
   // };
 
   _handleClick(selected) {
-    this.setState({selected, changedValues: true});
+    this.setState({selected, changedValues: true})
+    console.log(selected);
+
+    const selectedPlaylistUri = this.state.items[selected].uri
+    console.log(selectedPlaylistUri)
+    spotifyApi.play({context_uri: selectedPlaylistUri})
+    // this.setState({curSong: })
   }
 
   getCurrentPlaybackState() {
     const _this = this;
     spotifyApi.getMyCurrentPlaybackState().then(result => {
-      _this.setState({
-        curSong: {
-          album: result.item.album.name,
-          title: result.item.name,
-          artist: result.item.artists[0].name,
-          albumImg: result.item.album.images[0].url,
-        }
-      });
+      if (result) {
+        _this.setState({
+          curSong: {
+            album: result.item.album.name,
+            title: result.item.name,
+            artist: result.item.artists[0].name,
+            albumImg: result.item.album.images[0].url,
+          }
+        });
+      }
     });
   }
 
