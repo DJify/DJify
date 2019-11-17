@@ -163,13 +163,13 @@ class Room extends Component {
     muteButton={this.setVolume}
     isDj={this.state.isDj}/>}
     <br />
-    <small
-    style={{ marginBottom: 12 }}
+    <p
+    style={{ marginTop: '20px', marginBottom: '20px' }}
     className="color-neutral">{
       this.state.changedValues ?
         "Your changes will happen after this song"
         : "Select a playlist"
-    }</small>
+    }</p>
     <div style={{ height: '40vh', overflowY:'scroll' }}>
       { this.state.isDj && this.state.items.length > 0 &&
         this.state.items.map((item, index) =>
