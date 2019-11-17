@@ -18,4 +18,15 @@ userRouter.route('/')
 
 userRouter.route('/:userId')
 
+userRouter.route('/playlists')
+    .get((req, res) => {
+        const { access_token } = req.params
+        const spotifyUrl = 'https://api.spotify.com/v1/me/playlists'
+        const playlistRequest = utils.buildSpotifyApiRequest(spotifyUrl, access_token)
+
+        request.get(playlistRequest, (error, response, body) => {
+            res.json(body)
+        })
+    })
+
 module.exports = userRouter
