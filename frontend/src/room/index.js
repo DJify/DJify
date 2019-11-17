@@ -46,7 +46,8 @@ class Room extends Component {
       //amountAhead: 2,
       items: [],
       changedValues: false,
-      curSong: null
+      curSong: null,
+      volume: 100,
       //percent: -23,
     };
     this._handleClick = this._handleClick.bind(this);
@@ -106,8 +107,25 @@ class Room extends Component {
     });
   }
 
+  setVolume = () => {
+    const {volume} = this.state
+
+    if (volume == 0) {
+      this.setState({
+        volume: 100
+      });
+    } else {
+      this.setState({
+        volume: 0
+      });
+    }
+
+    spotifyApi.setVolume(volume).then(() => {});
+
+  }
+
   render() {
-    let {curSong} = this.state;
+    let {curSong, volume} = this.state;
 
     return(
       <div id="room">
@@ -143,8 +161,10 @@ class Room extends Component {
     {/*      :*/}
     {/*    null*/}
     {/*}*/}
-  {! this.state.force && curSong && <SongDisplay
+  {!this.state.force && curSong && <SongDisplay
     song={curSong}
+    volume={volume}
+    muteButton={this.setVolume}
     isDj={this.state.isDj}/>}
     <br />
     <small

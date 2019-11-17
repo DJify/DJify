@@ -1,5 +1,5 @@
 import React from 'react';
-import { IoMdHeart, IoMdVolumeMute } from 'react-icons/io';
+import { IoMdHeart, IoMdVolumeMute, IoMdVolumeHigh } from 'react-icons/io';
 
 const SongDisplay = (props) =>
 <div className="song">
@@ -23,8 +23,9 @@ const SongDisplay = (props) =>
         <IoMdHeart size={40}/>
       </button>
     }
-    <button>
-      <IoMdVolumeMute size={40}/>
+    <button onClick={props.muteButton}>
+      {props.volume != 0 && <IoMdVolumeMute size={40}/>}
+      {props.volume == 0 && <IoMdVolumeHigh size={40}/>}
     </button>
   </div>
 </div>;
