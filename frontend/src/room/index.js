@@ -39,23 +39,31 @@ class Room extends Component {
     let that = this;
     if (this.context && this.context[0] && this.context[0].token && this.state.user.username === "") {
       await spotifyApi.setAccessToken(this.context[0].token);
-      spotifyApi.getUserPlaylists({limit: 50})
-        .then(function(data) {
-          that.setState({
-            items: data.items
+      if (this.state.isDj) {
+        spotifyApi.getUserPlaylists()
+          .then(function (data) {
+            that.setState({
+              items: data.items
+            });
+            console.log('User playlists', data);
+          }, function (err) {
+            console.error(err);
           });
-          console.log('User playlists', data);
-        }, function(err) {
-          console.error(err);
+        this.setState({
+          user: {
+            username: this.context[0].username,
+            avatar: this.context[0].chosenAvatarId,
+          }
         });
-      this.setState({
-        user: {
-          username: this.context[0].username,
-          avatar: this.context[0].chosenAvatarId,
-        }
-      });
-      this.getCurrentPlaybackState();
-      setInterval(() => this.getCurrentPlaybackState(), 5000);
+        this.setState({
+          user: {
+            username: this.context[0].username,
+            avatar: this.context[0].chosenAvatarId,
+          }
+        });
+        this.getCurrentPlaybackState();
+        setInterval(() => this.getCurrentPlaybackState(), 5000);
+      }
     }
   }
 
@@ -63,21 +71,23 @@ class Room extends Component {
     let that = this;
     if (this.context && this.context[0] && this.context[0].token.length > 0) {
       await spotifyApi.setAccessToken(this.context[0].token);
-      spotifyApi.getUserPlaylists()
-        .then(function(data) {
-          that.setState({
-            items: data.items
+      if (this.state.isDj) {
+        spotifyApi.getUserPlaylists()
+          .then(function (data) {
+            that.setState({
+              items: data.items
+            });
+            console.log('User playlists', data);
+          }, function (err) {
+            console.error(err);
           });
-          console.log('User playlists', data);
-        }, function(err) {
-          console.error(err);
+        this.setState({
+          user: {
+            username: this.context[0].username,
+            avatar: this.context[0].chosenAvatarId,
+          }
         });
-      this.setState({
-        user: {
-          username: this.context[0].username,
-          avatar: this.context[0].chosenAvatarId,
-        }
-      });
+      }
       this.getCurrentPlaybackState();
       setInterval(() => this.getCurrentPlaybackState(), 5000);
     }
