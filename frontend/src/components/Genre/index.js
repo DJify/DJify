@@ -17,7 +17,7 @@ const GenreCard = ({
     >
       <h2>{genre}</h2>
     </div>
-    {(showAll ? rooms : rooms.slice(0, 2)).map(roomInfo => (
+    {(showAll ? rooms : rooms.slice(0, 3)).map(roomInfo => (
       <SongListing {...roomInfo} />
     ))}
     {/*{!showAll && (*/}
