@@ -3,8 +3,8 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 const ClientMessageTypes = Object.freeze({
     JOIN_ROOM: 'JOIN_ROOM',
     LEAVE_ROOM: 'LEAVE_ROOM',
-    UPVOTE: 'UPVOTE_CURRENT_SONG',
-    DOWNVOTE: 'DOWNVOTE_CURRENT_SONG',
+    UPVOTE: 'UPVOTE',
+    DOWNVOTE: 'DOWNVOTE',
     UPDATED_SONG_QUEUE: 'UPDATED_SONG_QUEUE',
 })
 
@@ -46,12 +46,12 @@ export class WebsocketClient {
         this._sendMessage(ClientMessageTypes.LEAVE_ROOM)
     }
 
-    upvoteCurrentSong() {
-        this._sendMessage(ClientMessageTypes.UPVOTE_CURRENT_SONG)
+    upvote() {
+        this._sendMessage(ClientMessageTypes.UPVOTE)
     }
 
-    downvoteCurrentSong() {
-        this._sendMessage(ClientMessageTypes.DOWNVOTE_CURRENT_SONG)
+    downvote() {
+        this._sendMessage(ClientMessageTypes.DOWNVOTE)
     }
 
     updateDjQueue(songIds) {

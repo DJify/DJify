@@ -33,9 +33,12 @@ class Room extends Component {
       curSong: null,
       volume: 100,
       playing: false,
-      //votePercent: -23,
+      votePercent: -23,
+      websocketClient: {},
     };
     this._handleClick = this._handleClick.bind(this);
+    this._handleUpvote = this._handleUpvote.bind(this);
+    this._handleDownvote = this._handleDownvote.bind(this);
 
     this._serverMessageHandler = msg => {
       const dataFromServer = JSON.parse(msg.data)
@@ -87,16 +90,32 @@ class Room extends Component {
     }
   }
 
-  async componentDidMount() {
-    let that = this;
+  _handleDownvote() {
+    if (this.state.websocketClient) {
+      this.state.websocketClient.downvote()
+    } 
+  }
 
+  _handleUpvote() {
+    if (this.state.websocketClient) {
+      this.state.websocketClient.upvote()
+    } 
+  }
+
+  async componentDidMount() {
+    // create websocket client
+    // note: we only have to do this with state because this.context isn't 
+    // available until after mount
     const pathArgs = this.props.location.pathname.split('/')
     const concertId = pathArgs[pathArgs.length - 1]
     const userId = this.context[0].id
     let wsServerUrl = process.env.WEBSOCKET_SERVER_URI || 'ws://127.0.0.1:8888'
     wsServerUrl += `/concert/${concertId}`
-    this.websocketClient = new WebsocketClient(wsServerUrl, userId, this._serverMessageHandler)
+    this.setState({ 
+      websocketClient: new WebsocketClient(wsServerUrl, userId, this._serverMessageHandler)
+    })
 
+    let that = this;
     if (this.context && this.context[0] && this.context[0].token.length > 0) {
       await spotifyClient.setAccessToken(this.context[0].token);
 
@@ -171,7 +190,6 @@ class Room extends Component {
     }
 
     spotifyClient.setVolume(volumeUpdated).then(() => {});
-
   }
 
   render() {

@@ -18,6 +18,10 @@ const RoomSchema = mongoose.Schema({
   userIds: [String],
   upvoterIds: [String],
   downvoterIds: [String],
+  votePercent: {
+    type: Number,
+    default: 0,
+  },
 })
 
 const Room = mongoose.model('Room', RoomSchema)
@@ -91,29 +95,6 @@ concertRouter.route('/join').post((req, res) => {
   })
 })
 
-concertRouter.route('/leave').post((req, res) => {
-  const { userId, concertId } = req.body
-  const curUser = User.findById(userId)
-  const curConcert = Concert.findById(concertId)
-
-  curConcert.users.remove(curUser)
-  curConcert.save(() => {
-    let redirectUrl = process.env.FRONTEND_URI || 'localhost:3000'
-    redirectUrl += '/dashboard'
-    res.redirect(redirectUrl)
-  })
-})
-
-concertRouter.route('/vote').post((req, res) => {
-  const { userId, concertId, vote } = req.body
-})
-
-concertRouter.route('/downvote').post((req, res) => {
-  const { userId, concertId } = req.body
-})
-
-concertRouter.route('/save-song').post((req, res) => {})
-
 concertRouter.route('/category/:categoryId').get((req, res) => {})
 
 const handleJoin = async (payload, roomId, client) => {
@@ -132,44 +113,59 @@ const handleJoin = async (payload, roomId, client) => {
     const roomAfter = await Room.findById(roomId)
     console.log(`users after join: ${roomAfter.userIds}`)
   } catch(err) {
-    console.log(`Error in handleJoin: ${err.message}`)
-    sendWebsocketMessage(client, ServerMessageTypes.ERROR, { message: 'Failed to join room.' })
+    catchWebsocketError('handleJoin', err, 'Failed to join room.', client)
   }
 }
 
 const handleLeave = async (roomId, userId) => {
-  let room = await Room.findById(roomId)
-  console.log(`users before leave: ${room.userIds}`)
-
-  await Room.updateOne(
-    { _id: roomId },
-    { 
-      $pull: { 
-        userIds: userId,
-        upvoterIds: userId,
-        downvoterIds: userId,
-      } 
-    }
-  )
-
-  room = await Room.findById(roomId)
-  console.log(`users after leave: ${room.userIds}`)
-}
-
-const handleVote = (payload, roomId, isUpvote) => {
-  if (isUpvote === true) {
-    // do the upvote
-  } else {
-    // do the downvote
+  try {
+    await Room.updateOne(
+      { _id: roomId },
+      { 
+        $pull: { 
+          userIds: userId,
+          upvoterIds: userId,
+          downvoterIds: userId,
+        } 
+      }
+    )
+  } catch(err) {
+    catchWebsocketError('handleLeave', err)
   }
+
 }
 
-const handleUpvote = (payload, roomId, client) => {
-  handleVote(client, payload, roomId, client, true)
+const handleVote = async (payload, roomId, client, isUpvote) => {
+  try {
+    const { userId } = client
+    const room = await Room.findById(roomId)
+    const { userIds, upvoterIds, downvoterIds } = room
+
+    // if the user hasn't already voted on this song, add their vote
+    if (!upvoterIds.includes(userId) && !downvoterIds.includes(userId)) {
+      const collectionToUpdate = isUpvote ? upvoterIds : downvoterIds
+      collectionToUpdate.push(userId)
+      
+      const votePercent = (upvoterIds.length - downvoterIds.length) / userIds.length
+      room.votePercent = votePercent
+      await room.save()
+
+      const broadcastMessage = createWebsocketMessage(ServerMessageTypes.UPDATE_VOTE_PERCENT, { votePercent })
+      return broadcastMessage
+    }
+  } catch(err) {
+    const readableError = 'We encountered an error adding your vote.'
+    catchWebsocketError('handleVote', err, readableError, client)
+  }
+
 }
 
-const handleDownvote = (payload, roomId, client) => {
-  handleVote(client, payload, roomId, client, false)
+const handleUpvote = async (payload, roomId, client) => {
+  return await handleVote(payload, roomId, client, true)
+}
+
+const handleDownvote = async (payload, roomId, client) => {
+  return await handleVote(payload, roomId, client, false)
 }
 
 // map the message type to an appropriate handler
@@ -179,12 +175,21 @@ const messageTypeToHandler = {
   [ClientMessageTypes.DOWNVOTE]: handleDownvote,
 }
 
-const sendWebsocketMessage = (client, messageType, rest) => {
-  const message = JSON.stringify({
+const createWebsocketMessage = (messageType, rest) => {
+  return JSON.stringify({
     type: messageType,
     ...rest
   })
-  client.send(message)
+}
+
+const catchWebsocketError = (location, serverErr, readableError='', client=undefined) => {
+  console.log(`\n\nError in ${location}: ${serverErr.message}`)
+  console.log(serverErr.stack)
+  if (client !== undefined) {
+    readableError = readableError === '' ? readableError : 'Sorry, we encountered an error.'
+    const message = createWebsocketMessage(ServerMessageTypes.ERROR, { err: readableError })
+    client.send(message)
+  }
 }
 
 function webSocketHandler(client, request) {
@@ -200,11 +205,11 @@ function webSocketHandler(client, request) {
 
     const handler = messageTypeToHandler[type]
     if (handler === undefined) {
-      console.log(`Handler for message type: '${type}' not implemented`)
-      sendWebsocketMessage(client, ServerMessageTypes.ERROR, { message: 'Request unsuccessful.' })
+      const err = { message: `Handler not defined for message of type: ${type}` }
+      catchWebsocketError('webSocketHandler', err, '', client)
     }
 
-    // handlers should only return a broadcastMessage if they want to send an update to all other clients
+    // handlers should only return a broadcastMessage if they want to send an update to all clients
     const broadcastMessage = await handler(payload, roomId, client)
     if (broadcastMessage) {
       const numberOfRecipients = this.broadcast(client, broadcastMessage, { skipSelf: false })

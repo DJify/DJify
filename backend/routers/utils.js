@@ -8,8 +8,8 @@ const buildSpotifyApiRequest = (url, access_token, extras) => ({
 const ClientMessageTypes = Object.freeze({
     JOIN_ROOM: 'JOIN_ROOM',
     LEAVE_ROOM: 'LEAVE_ROOM',
-    UPVOTE: 'UPVOTE_CURRENT_SONG',
-    DOWNVOTE: 'DOWNVOTE_CURRENT_SONG',
+    UPVOTE: 'UPVOTE',
+    DOWNVOTE: 'DOWNVOTE',
     UPDATED_SONG_QUEUE: 'UPDATED_SONG_QUEUE',
 })
 
