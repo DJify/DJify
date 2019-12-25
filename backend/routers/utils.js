@@ -5,6 +5,23 @@ const buildSpotifyApiRequest = (url, access_token, extras) => ({
     ...extras,
 })
 
+const ClientMessageTypes = Object.freeze({
+    JOIN_ROOM: 'JOIN_ROOM',
+    LEAVE_ROOM: 'LEAVE_ROOM',
+    UPVOTE: 'UPVOTE',
+    DOWNVOTE: 'DOWNVOTE',
+    UPDATED_SONG_QUEUE: 'UPDATED_SONG_QUEUE',
+})
+
+const ServerMessageTypes = Object.freeze({
+    UPDATE_VOTE_PERCENT: 'UPDATE_PERCENT_VOTE',
+    UPDATE_USER_DJ_STATUS: 'UPDATE_USER_DJ_STATUS',
+    UPDATE_CUR_SONG: 'UPDATE_CUR_SONG',
+    ERROR: 'ERROR',
+})
+
 module.exports = {
-    buildSpotifyApiRequest
+    buildSpotifyApiRequest,
+    ClientMessageTypes,
+    ServerMessageTypes,
 }

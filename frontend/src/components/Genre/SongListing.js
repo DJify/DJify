@@ -13,8 +13,8 @@ const images = [
   require('../../resources/img/avatar/BlackFemale.png'),
 ]
 
-const SongListing = ({ name, djUserId, avatarId, listenerCount }) => (
-  <Link className="blank-link" to={`/room/${avatarId || 0}`}>
+const SongListing = ({ name, djUserId, avatarId, listenerCount, roomId }) => (
+  <Link className="blank-link" to={`/room/${roomId || 0}`}>
     <section className="song">
       <img src={images[avatarId || 0]} alt={name} />
       <div className="text">

@@ -7,6 +7,7 @@
     "start": "nodemon server.js"
   },
   "dependencies": {
+    "@small-tech/express-ws": "https://github.com/aral/express-ws.git",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.15.4",
