@@ -1,13 +1,14 @@
-const express = require('express')
 require('dotenv').config()
 const mongoose = require('mongoose')
+const express = require('express')
+const expressWs = require('@small-tech/express-ws')(express())
 
 const loginRouter = require('./routers/loginRouter')
 const concertRouter = require('./routers/concertRouter')
 const userRouter = require('./routers/userRouter')
 const trackRouter = require('./routers/trackRouter')
 
-const app = express()
+const app = expressWs.app
 
 app.use('/login', loginRouter)
 app.use('/concert', concertRouter)
