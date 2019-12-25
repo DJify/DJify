@@ -8,7 +8,7 @@ const ClientMessageTypes = Object.freeze({
     UPDATED_SONG_QUEUE: 'UPDATED_SONG_QUEUE',
 })
 
-const ServerMessageTypes = Object.freeze({
+export const ServerMessageTypes = Object.freeze({
     UPDATE_VOTE_PERCENT: 'UPDATE_PERCENT_VOTE',
     UPDATE_USER_DJ_STATUS: 'UPDATE_USER_DJ_STATUS',
     UPDATE_CUR_SONG: 'UPDATE_CUR_SONG',
