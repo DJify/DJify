@@ -91,12 +91,10 @@ class Room extends Component {
     let that = this;
 
     const pathArgs = this.props.location.pathname.split('/')
-    console.log(`pathArgs ${pathArgs}`)
     const concertId = pathArgs[pathArgs.length - 1]
     const userId = this.context[0].id
     let wsServerUrl = process.env.WEBSOCKET_SERVER_URI || 'ws://127.0.0.1:8888'
     wsServerUrl += `/concert/${concertId}`
-    console.log(`server url ${wsServerUrl}`)
     this.websocketClient = new WebsocketClient(wsServerUrl, userId, this._serverMessageHandler)
 
     if (this.context && this.context[0] && this.context[0].token.length > 0) {
@@ -123,8 +121,6 @@ class Room extends Component {
       setInterval(() => this.getCurrentPlaybackState(), 5000);
     }
   }
-
-  
 
   componentWillUnmount() {
     this.websocketClient.close()
@@ -198,7 +194,7 @@ class Room extends Component {
     {/*        {*/}
     {/*          this.state.amountAhead === 0 ?*/}
     {/*            <div>*/}
-    {/*              <Progress votePercent={Math.abs(this.state.votePercent)} status={this.state.votePercent >= 0 ? "success" : "error"} />*/}
+    {/*              <Progress percent={Math.abs(this.state.votePercent)} status={this.state.votePercent >= 0 ? "success" : "error"} />*/}
     {/*              {*/}
     {/*                this.state.votePercent >= 0 ? "You are on your way to an encore!" : "Too many dislikes, you might get booted!"*/}
     {/*              }*/}
