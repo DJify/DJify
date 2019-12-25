@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
+import { Progress } from 'react-sweet-progress';
+import "react-sweet-progress/lib/style.css";
+import { Link } from "react-router-dom";
+import SpotifyClient from "spotify-web-api-js";
+
 import PartyAnimation from "./PartyAnimation";
 import SongDisplay from "./SongDisplay";
 import JudgeDisplay from "./JudgeDisplay";
 import QueueDisplay from "./QueueDisplay";
-import { Progress } from 'react-sweet-progress';
-import "react-sweet-progress/lib/style.css";
-import {Link} from "react-router-dom";
 import { StateContext } from "../UserStore";
-var Spotify = require('spotify-web-api-js');
+import { ServerMessageTypes, WebsocketClient } from "./WebsocketUtils";
 
-var spotifyApi = new Spotify();
+
+const spotifyClient = new SpotifyClient();
 
 class Room extends Component {
 
@@ -30,18 +33,34 @@ class Room extends Component {
       curSong: null,
       volume: 100,
       playing: false,
-      //percent: -23,
+      //votePercent: -23,
     };
     this._handleClick = this._handleClick.bind(this);
-    //this.handleOutletOrder = this.handleOutletOrder.bind(this);
+
+    this._serverMessageHandler = msg => {
+      const dataFromServer = JSON.parse(msg.data)
+
+      // given a message type from the websocket server, get an updated version of the state
+      const messageTypeToUpdatedState = {
+        [ServerMessageTypes.UPDATE_VOTE_PERCENT]: { votePercent: dataFromServer.votePercent },
+        [ServerMessageTypes.UPDATE_USER_DJ_STATUS]: { isDj: dataFromServer.isDj },
+        [ServerMessageTypes.UPDATE_CUR_SONG]: { curSong: dataFromServer.curSong },
+      }
+      
+      const { type } = dataFromServer
+      const updatedState = messageTypeToUpdatedState[type]
+      if (updatedState) {
+        this.setState(updatedState)
+      }
+    }
   }
 
   async componentDidUpdate(prevProps, prevState, snapshot) {
     let that = this;
     if (this.context && this.context[0] && this.context[0].token && this.state.user.username === "") {
-      await spotifyApi.setAccessToken(this.context[0].token);
+      await spotifyClient.setAccessToken(this.context[0].token);
       if (this.state.isDj) {
-        spotifyApi.getUserPlaylists()
+        spotifyClient.getUserPlaylists()
           .then(function (data) {
             that.setState({
               items: data.items
@@ -70,10 +89,21 @@ class Room extends Component {
 
   async componentDidMount() {
     let that = this;
+
+    const pathArgs = this.props.location.pathname.split('/')
+    console.log(`pathArgs ${pathArgs}`)
+    const concertId = pathArgs[pathArgs.length - 1]
+    const userId = this.context[0].id
+    let wsServerUrl = process.env.WEBSOCKET_SERVER_URI || 'ws://127.0.0.1:8888'
+    wsServerUrl += `/concert/${concertId}`
+    console.log(`server url ${wsServerUrl}`)
+    this.websocketClient = new WebsocketClient(wsServerUrl, userId, this._serverMessageHandler)
+
     if (this.context && this.context[0] && this.context[0].token.length > 0) {
-      await spotifyApi.setAccessToken(this.context[0].token);
+      await spotifyClient.setAccessToken(this.context[0].token);
+
       if (this.state.isDj) {
-        spotifyApi.getUserPlaylists({ limit: 50})
+        spotifyClient.getUserPlaylists({ limit: 50})
           .then(function (data) {
             that.setState({
               items: data.items
@@ -94,6 +124,12 @@ class Room extends Component {
     }
   }
 
+  
+
+  componentWillUnmount() {
+    this.websocketClient.close()
+  }
+
   // handleOutletOrder = (items) => {
   //   this.setState({items})
   // };
@@ -102,13 +138,13 @@ class Room extends Component {
     if (this.state.selected === -1 && this.state.isDj) {
       this.setState({selected, changedValues: true, playing: true})
       const selectedPlaylistUri = this.state.items[selected].uri
-      spotifyApi.play({context_uri: selectedPlaylistUri})
+      spotifyClient.play({context_uri: selectedPlaylistUri})
     }
   }
 
   getCurrentPlaybackState() {
     const _this = this;
-    spotifyApi.getMyCurrentPlaybackState().then(result => {
+    spotifyClient.getMyCurrentPlaybackState().then(result => {
       if (result) {
         _this.setState({
           curSong: {
@@ -138,7 +174,7 @@ class Room extends Component {
       volumeUpdated = 0;
     }
 
-    spotifyApi.setVolume(volumeUpdated).then(() => {});
+    spotifyClient.setVolume(volumeUpdated).then(() => {});
 
   }
 
@@ -162,9 +198,9 @@ class Room extends Component {
     {/*        {*/}
     {/*          this.state.amountAhead === 0 ?*/}
     {/*            <div>*/}
-    {/*              <Progress percent={Math.abs(this.state.percent)} status={this.state.percent >= 0 ? "success" : "error"} />*/}
+    {/*              <Progress votePercent={Math.abs(this.state.votePercent)} status={this.state.votePercent >= 0 ? "success" : "error"} />*/}
     {/*              {*/}
-    {/*                this.state.percent >= 0 ? "You are on your way to an encore!" : "Too many dislikes, you might get booted!"*/}
+    {/*                this.state.votePercent >= 0 ? "You are on your way to an encore!" : "Too many dislikes, you might get booted!"*/}
     {/*              }*/}
     {/*            </div>*/}
     {/*            :*/}
